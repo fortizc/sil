@@ -34,6 +34,7 @@ struct simage
     size_t width;
     size_t height;
     size_t stride;
+    size_t roi;
     stype_t type;
 #ifdef ARCH32
     uint32_t *data;
@@ -129,6 +130,7 @@ simage_t *sil_image_copy(const simage_t *img)
 
 void sil_image_free(simage_t *img)
 {
+    img->data -= img->roi;
     free (img->data);
     free (img);
 }
@@ -142,12 +144,17 @@ void sil_image_roi(simage_t *img, size_t top, size_t left, size_t width, size_t 
         && width <= img->width
         && left + width <= img->width);
 
-    size_t n = top * img->stride + left * bytes_per_pixel(img->type);
-    assert((n % ARCH_WORD) == 0);
+    do
+    {
+        img->roi = top * img->stride + left * bytes_per_pixel(img->type);
+        ++left;
+    }
+    while((img->roi % ARCH_WORD) != 0);
 
+    img->roi /= ARCH_WORD;
     img->width = width;
     img->height = height;
-    img->data += n / ARCH_WORD;
+    img->data += img->roi;
 }
 
 void sil_image_zero(simage_t *img)

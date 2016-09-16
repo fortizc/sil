@@ -36,7 +36,7 @@ typedef enum sil_image_type stype_t;
 
 simage_t *sil_image_new(size_t width, size_t height, stype_t type);
 simage_t *sil_image_zero_new(size_t width, size_t height, stype_t type);
-simage_t *sil_image_copy(const simage_t *img);
+simage_t *sil_image_copy(const simage_t *src);
 
 void sil_image_free(simage_t *img);
 void sil_image_roi(simage_t *img, size_t top, size_t left, size_t width, size_t height);

@@ -113,18 +113,24 @@ simage_t *sil_image_zero_new(size_t width, size_t height, stype_t type)
     return allocate_image(width, height, type, 1);
 }
 
-simage_t *sil_image_copy(const simage_t *img)
+simage_t *sil_image_copy(const simage_t *src)
 {
-    simage_t *dst = allocate_image(img->width, img->height, img->type, 0);
+    simage_t *dst = allocate_image(src->width, src->height, src->type, 0);
     if (!dst)
         return NULL;
 
-    size_t size = img->stride * img->height;
-#ifdef ARCH32
-    memcpy(dst->data, img->data, size * sizeof(uint32_t));
-#else
-    memcpy(dst->data, img->data, size * sizeof(uint64_t));
-#endif
+    size_t bytes = src->width * bytes_per_pixel(src->type);
+
+    for (size_t i = 0; i < src->height; ++i)
+    {
+        uint8_t *src_bytes = sil_image_data_row8(src, i);
+        uint8_t *dst_bytes = sil_image_data_row8(dst, i);
+        for (size_t j = 0; j < bytes; ++j)
+        {
+            dst_bytes[j] = src_bytes[j];
+        }
+    }
+
     return dst;
 }
 

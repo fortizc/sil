@@ -99,6 +99,7 @@ static simage_t *allocate_image(size_t width, size_t height, stype_t type, int z
     img->width = width;
     img->height = height;
     img->type = type;
+    img->roi = 0;
 
     return img;
 }

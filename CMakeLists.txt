@@ -24,3 +24,8 @@ add_library(${PROJECT_NAME} SHARED ${SOURCES})
 install(TARGETS ${PROJECT_NAME} DESTINATION lib/)
 file(GLOB HEADERS include/sil/*.h)
 install(FILES ${HEADERS} DESTINATION include/${PROJECT_NAME})
+
+# Test
+enable_testing()
+add_subdirectory(test)
+add_test(basic_getters test/basic_getters)
